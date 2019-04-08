@@ -2,29 +2,52 @@
 
 package net.degoes.essentials
 
+
+//Set {a, b, c}
+// Foo = {x | x is a person, x is wearing glasses}
+// 1 + 1 = 2
+// the equal sign is different in functional programming:
+// two things has two different name like an alias
+// Scala has two universes:
+// 1. values: (anything which can be stick in a val like: val x = ???)
+// 2. types: type X = Int
+//       Type is a set of values tat is exist inside in scala
 object types {
   type ??? = Nothing
 
-  //
+  //val x: Int -> is a logical condition which I can prove on the other side of the equal sing.
+  // if I have to cast something it means I failed to prove the consistent of my code
+  // casting: turn off scala compiler brain -> it can lead runtime errors (not trustable)
+  //Int = {x | x is a set of 64 bit of integers}
+  val x: Int = 42
+
+
   // EXERCISE 1
   //
   // List all values of the type `Unit`.
-  //
-  val UnitValues: Set[Unit] = ???
+  // Unit is analogous to Java void. It is type that holds no information.
+  //Unit is inhabited by one value.
+  //  A set of Unit's size is always one.
+  val UnitValues: Set[Unit] = Set(())
 
-  //
+
   // EXERCISE 2
   //
   // List all values of the type `Nothing`.
-  //
+  // Nothing is  duo of Unit
+  // Nothing is a subtype is everything
+  // a list or set of nothing's size is always zero
+  // Nothing = {} not possible to construct
   val NothingValues: Set[Nothing] = ???
+  def foo(n: Nothing): String = n // no one can call this method
+  def foo2(n: Unit): String = ???
 
-  //
+
   // EXERCISE 3
   //
   // List all values of the type `Boolean`.
-  //
-  val BoolValues: Set[Boolean] = ???
+  // size two
+  val BoolValues: Set[Boolean] = Set(true, false)
 
   //
   // EXERCISE 4
@@ -37,18 +60,27 @@ object types {
   // EXERCISE 5
   //
   // List all values of the type `(Boolean, Boolean)`.
-  //
+  // size four
   val TupleBoolBoolValues: Set[(Boolean, Boolean)] =
-    ???
+  ???
 
   //
   // EXERCISE 6
   //
   // List all values of the type `Either[Either[Unit, Unit], Unit]`.
-  //
+  // three possibilites
+  // A = {a1, a2, ...an}
+  // B = {b1, b2, ...bn}
+  // A*B = {(a, b) : a is an A, b is a B}
+  // (Int, Boolean = {(0, true), (0, false), ... ,}  -> Tuple
+  // instead of tuple in scala we rather use case classes:
+    case class Person(name: String, age: Int)
+  // |X| = the size of the set X
+  // |A * B| = |A| * |B|
   val EitherEitherUnitUnitUnitValues: Set[Either[Either[Unit, Unit], Unit]] = ???
 
-  //
+
+
   // EXERCISE 7
   //
   // Given:
@@ -58,6 +90,21 @@ object types {
   // List all the elements in `A * B`.
   //
   val AProductB: Set[(Boolean, String)] = ???
+
+  //Either[A, B] <- Boolean
+  val either: Either[Boolean, String] = ???
+  either match {
+    case Left(bool) =>
+    case Right(str) =>
+  }
+
+  val tuple: Tuple2[Boolean, String] = ???
+  either match {
+    case ??? =>
+    case ??? =>
+  }
+
+
 
   //
   // EXERCISE 8
@@ -104,7 +151,21 @@ object types {
   // a robot (a number) or the identifier of a person (a name).
   //
   type Identifier1 = ???
-  sealed trait Identifier2
+  sealed trait Identifier2 // ~ is how ot model subtypes
+
+  sealed trait JobTitle
+  case class Engineer(level: Int) extends JobTitle
+  case class CEO(level: Int) extends JobTitle
+  case object CEO extends JobTitle
+//  jobTitle match {
+//    case Engineer =>
+//    case CEO =>
+//      ...
+//  }
+
+  sealed trait Country
+  case object Hungary extends Country
+  case object USA     extends Country
 
   //
   // EXERCISE 13
@@ -123,6 +184,8 @@ object types {
   //
   type CreditCard = ???
 
+  //product type
+
   //
   // EXERCISE 15
   //
@@ -132,6 +195,8 @@ object types {
   //
   type PaymentMethod = ???
 
+  //sum type
+
   //
   // EXERCISE 16
   //
@@ -139,6 +204,8 @@ object types {
   // employee at a company, which has a title, salary, name, and employment date.
   //
   type Employee = ???
+
+  //product
 
   //
   // EXERCISE 17
@@ -149,17 +216,21 @@ object types {
   //
   type ChessPiece = ???
 
+  //sum
+
   //
   // EXERCISE 18
   //
   // Create a "smart constructor" for `Programmer` that only permits levels
   // that are non-negative.
   //
-  final case class Programmer private (level: Int) 
+  abstract case class Programmer private (level: Int)
   object Programmer {
-    def make(level: Int): Option[Programmer] = 
-      ???
+    def apply(level: Int): Option[Programmer] =
+      if (level < 0) None
+      else Some(new Programmer(level){})
   }
+
 
   //
   // EXERCISE 19
@@ -169,9 +240,9 @@ object types {
   // business domain. Note any limitations in your solution.
   //
   case class BankAccount(
-    ownerId: String, 
+    ownerId: String, // should not be empty
     balance: BigDecimal,
-    accountType: String, 
+    accountType: String, //should be sum type
     openedDate: Long)
 
   //
@@ -184,6 +255,20 @@ object types {
 }
 
 object functions {
+  // A function f ; A => B is a mapping from one set A, called the domain, to another set B, called the codomain, such for every a in A, f(a) is in B.
+  // A = {"eggs", "coff"}
+  // B = { true, false}
+  // likes : A => B
+  // likes = _ match {
+  //    case "eggs" => false
+  //    case "coff" => true
+  // }
+  //
+  // Definition of function:
+  // A procedure f : A => B that is satisfies three properties:
+  //  1. Totality. For every a in A, f(a) is in B
+  //  2. Determinism. If a == b, f(a) == f(b)
+  //  3. Purity. The only effect of evaluating f(a) is computing the return value (CPU & Memory).
   type ??? = Nothing
 
   //
@@ -191,24 +276,24 @@ object functions {
   //
   // Convert the following non-function into a function.
   //
-  def parseInt1(s: String): Int = s.toInt
-  def parseInt2(s: String): ??? = ???
+  def parseInt1(s: String): Int = s.toInt  // it can fail may be on empty string or words etc.
+  def parseInt2(s: String): ??? = ???  // one the possible solutions is using options
 
   //
   // EXERCISE 2
   //
   // Convert the following non-function into a function.
   //
-  def arrayUpdate1[A](arr: Array[A], i: Int, f: A => A): Unit =
+  def arrayUpdate1[A](arr: Array[A], i: Int, f: A => A): Unit =    // it is not total (int param can be negative)
     arr.update(i, f(arr(i)))
-  def arrayUpdate2[A](arr: Array[A], i: Int, f: A => A): ??? = ???
+  def arrayUpdate2[A](arr: Array[A], i: Int, f: A => A): ??? = ???  // could be an option array or wrap around the boundaries of the array
 
   //
   // EXERCISE 3
   //
   // Convert the following non-function into a function.
   //
-  def divide1(a: Int, b: Int): Int = a / b
+  def divide1(a: Int, b: Int): Int = a / b   // division by zero could e fail => optioning
   def divide2(a: Int, b: Int): ??? = ???
 
   //
@@ -219,7 +304,7 @@ object functions {
   var id = 0
   def freshId1(): Int = {
     val newId = id
-    id += 1
+    id += 1   // mutating the memory, it is a side effect
     newId
   }
   def freshId2(/* ??? */): (Int, Int) = ???
@@ -231,7 +316,7 @@ object functions {
   //
   import java.time.LocalDateTime
   def afterOneHour1: LocalDateTime = LocalDateTime.now.plusHours(1)
-  def afterOneHour2(/* ??? */): LocalDateTime = ???
+  def afterOneHour2(/* ??? */): LocalDateTime = ???   // solution => passing the now
 
   //
   // EXERCISE 6
@@ -239,10 +324,10 @@ object functions {
   // Convert the following non-function into function.
   //
   def head1[A](as: List[A]): A = {
-    if (as.length == 0) println("Oh no, it's impossible!!!")
+    if (as.length == 0) println("Oh no, it's impossible!!!")  // printing is also side effect, it is not total also
     as.head
   }
-  def head2[A](as: List[A]): ??? = ???
+  def head2[A](as: List[A]): ??? = ???   // solution => A option
 
   //
   // EXERCISE 7
@@ -251,39 +336,48 @@ object functions {
   //
   trait Account
   trait Processor {
-    def charge(account: Account, amount: Double): Unit
+    def charge(account: Account, amount: Double): Unit   // this is also not total
   }
   case class Coffee() {
     val price = 3.14
   }
-  def buyCoffee1(processor: Processor, account: Account): Coffee = {
+  def buyCoffee1(processor: Processor, account: Account): Coffee = {   // it is not total, always the same coffee, it sould return an option
     val coffee = Coffee()
     processor.charge(account, coffee.price)
     coffee
   }
-  final case class Charge(account: Account, amount: Double)
-  def buyCoffee2(account: Account): ??? = ???
+  final case class Charge[A](account: Account, amount: Double, a: A)
+  def buyCoffee2(account: Account): Charge[Coffee] = ???    // solution is returning a tuple of coffee and charge Option[(Coffe, Charge)]
+  // never check for null always use option
+
+  // 1. Math Functions
+  // 2. No Null
+  // 3. No exceptions for Control Flow    => always throws it but never catch
+  // 4. No java.lang.Object methods (toString, hashCode, equals, eq / ne, clone, wait, notify, notifyAll)
+  //
+
 
   //
   // EXERCISE 8
   //
   // Implement the following function under the Scalazzi subset of Scala.
   //
-  def printLine(line: String): Unit = ???
+  def printLine(line: String): Unit = ()
 
   //
   // EXERCISE 9
   //
   // Implement the following function under the Scalazzi subset of Scala.
   //
-  def readLine: String = ???
+  def readLine: String = ???  // no param so its always return a constatnt string
+  val readLineSolved: String = ""
 
   //
   // EXERCISE 10
   //
   // Implement the following function under the Scalazzi subset of Scala.
   //
-  def systemExit(code: Int): Unit = ???
+  def systemExit(code: Int): Unit = ()
 
   //
   // EXERCISE 11
@@ -298,7 +392,10 @@ object functions {
     println("To exit the help page, type `exit`.")
   }
   def printer2[A](println: String => A, combine: (A, A) => A): A =
-    ???
+    combine(println("Welcome to the help page!"),
+      combine(println("To list commands, type `commands`."),
+        combine(println("For help on a command, type `help <command>`"),
+          combine(println("To exit the help page, type `exit`.")))))
 
   //
   // EXERCISE 12
@@ -335,18 +432,35 @@ object functions {
     def finish(): List[List[Boolean]] =
       canvas.map(_.toList).toList
   }
-  def draw2(size: Int /* ... */): ??? = ???
+  def draw2(size: Int , commands: List[Command]): List[List[Boolean]] = ???
+
+  sealed trait Command
+  case object goLeft extends Command
+  case object goRight extends Command
+  case object goUp extends Command
+  case object goDown extends Command
+  case object Draw extends Command
+
 }
 
 object higher_order {
+  // paramatric polymorphism
+  def identify[A](a: A): A = ???
+
+  sealed trait Tree[A]      // it pushes more information of the behaviior or datat type into the type signature
+  //case class Fork(left: Tree[A], right: Tree[A])
+  //case class Leaf(value: A)
+
+  def foo[A, B](t: (A, B), g: A => A) : A = ???
+
+  def foo(t: (String, String), g: String => String): String = ???
 
   //
   // EXERCISE 1
   //
   // Implement the following higher-order function.
-  //
-  def fanout[A, B, C](f: A => B, g: A => C): A => (B, C) =
-    ???
+  // higher order function: except and/or returns function.
+  def fanout[A, B, C](f: A => B, g: A => C): A => (B, C) = (a:  A) => (f(a), g(a))
 
   //
   // EXERCISE 2
@@ -386,8 +500,16 @@ object higher_order {
   // Implement the following higher-order function. After you implement
   // the function, interpret its meaning.
   //
-  def alt[E1, E2, A, B](l: Parser[E1, A], r: E1 => Parser[E2, B]):
-    Parser[(E1, E2), Either[A, B]] = ???
+  def alt[E1, E2, A, B](l: Parser[E1, A], r: E1 => Parser[E2, B]): Parser[(E1, E2), Either[A, B]] =
+    Parser((input: String) =>
+      ( l.run(input) match {
+        case Left(e1) => r(e1).run(input) match {
+          case Left(e2) => Left((e1, e2))
+          case Right((input, b)) => Right((input, Right(b)))
+        }
+        case Right((input, a)) => Right((input, Left(a)))
+      }) : Either[(E1, E2), (String, Either[A, B])]
+    )
 
   case class Parser[+E, +A](run: String => Either[E, (String, A)])
   object Parser {
@@ -424,9 +546,12 @@ object poly_functions {
   // function `A => A`, and apply it repeatedly to a starting value
   // `A` the specified number of times.
   //
+  def square(i: Int): Int = i * i  // a method is not typeable
+  val square: Int => Int = (i: Int) => i * i   // this is a function type
+
+
   object repeat {
-    def apply[A](n: Int)(a: A, f: A => A): A =
-      ???
+    def apply[A](n: Int)(a: A, f: A => A): A = ???
   }
   repeat[       Int](100)(       0, _ +   1) // 100
   repeat[    String]( 10)(      "", _ + "*") // "**********"
@@ -481,12 +606,41 @@ object poly_functions {
   // the polymorphic function. Compare to the original.
   //
   object groupBy2 {
-
+    def apply[A, B, C](
+      events: List[A],
+      by: A => B)(
+        reducer: (B, List[A]) => C):
+        Map[B, C] = ???
   }
   // groupBy2(TestData, ByDate)(Reducer) == ExpectedResults
 }
 
 object higher_kinded {
+  //Int - String - Boolean - Unit -...  monomorphic dt
+  // * = {String, Boolean, Int, Double, Unit, List[Int], List[JIRA], ...,}
+  //   = {x | x can occure in type poisitionm i.e. is a type }
+  // {List, Set, Seq, Future, Option ...,}
+  val x: Int = 3
+  val y: List[Int] = ???  // List[*] everything can be within the brackets which is a star(* above)
+  case class Person(name: String, age: Int)
+  Person("John", 42)
+
+  //List - Seq -Set - Future -...  polimorphic dt
+  // * => * = { List, Set, Seq, Future, Option, ..., }
+  //        = { x | x is a type constructor that takes one type }
+  //
+  // [*,*] => * = { Tuple2, Either, Product2, Map, Function, ...}
+  //              = { x | x is a type constructor that takes two types }
+  //Higher kinded:
+  // (* => *) => *
+  //
+  class Foo[A[_]]
+  // (* => *) => *
+  //type Bar = Foo[List]
+
+  class Foo1[A[A, B[A, B, C[A, B, C]], C], B, C]   // class Foo1[A[_, _[_, _, _[_, _, _]], _], B, C]
+  def foo[A, B, C] = ???
+
   type ?? = Nothing
   type ???[A] = Nothing
   type ????[A, B] = Nothing
@@ -510,21 +664,22 @@ object higher_kinded {
   // Identify a type constructor that takes two type parameters of kind `*` (i.e.
   // has kind `[*, *] => *`), and place your answer inside the square brackets.
   //
-  type Answer2 = `[*, *] => *`[????]
+  type Answer2 = `[*, *] => *`[????] // Map
 
   //
   // EXERCISE 3
   //
   // Create a new type called `Answer3` that has kind `*`.
   //
-  trait Answer3 /*[]*/
+  trait Answer3 /*[]*/   //leave as it is
+
 
   //
   // EXERCISE 4
   //
   // Create a trait with kind `[*, *, *] => *`.
   //
-  trait Answer4 /*[]*/
+  trait Answer4[A, B, C] /*[]*/
 
   def flip[A, B, C](f: (A, B) => C): (B, A) => C = ???
   
@@ -542,7 +697,7 @@ object higher_kinded {
   //
   // Create a trait with kind `[* => *, (* => *) => *] => *`.
   //
-  trait Answer6 /*[]*/
+  trait Answer6[A[_], B[_[_]]] /*[]*/
 
   //
   // EXERCISE 7
@@ -591,7 +746,15 @@ object higher_kinded {
     // This method will return the number of `A`s inside `fa`.
     def size[A](fa: F[A]): Int
   }
-  val ListSized: Sized[List] = ???
+  // type Foo = Sized[Seq]   ->  Set, Option, List ...
+  val ListSized: Sized[List] =
+    new Sized[List] {
+      def size[A](fa: List[A]): Int = fa.length
+    }
+
+  val plus: (Int, Int) => Int = (x: Int, y: Int) => x + y
+  //List(1,2,3).map(plus(1,2),_)
+  type Foo = Sized[Map]
 
   //
   // EXERCISE 9
@@ -621,6 +784,30 @@ object higher_kinded {
 }
 
 object tc_motivating {
+  trait LessThenOOP[A] {
+    def lessThan(that: A) : Boolean
+  }
+
+  def sortOOP[A <: LessThenOOP[A]](as: List[A]): List[A] = ???
+  case class PersoN(name: String, age: Int) extends LessThenOOP[PersoN] {
+    override def lessThan(that: PersoN): Boolean = ???
+  }
+  sortOOP(List(PersoN("q", 1), PersoN("m", 2)))
+
+  trait LessThanFP[A] {
+    def lessThan(l: A, r: A): Boolean
+
+    def lessThanTransitive(a: A, b: A, c: A): Boolean =
+      lessThan(a, b) && lessThan(b, c) || lessThan(a, c)
+
+    def lessThanIrreflexive(a: A): Boolean =
+      !lessThan(a, a)
+
+    def lessThanAsymmetric(a: A, b: A): Boolean =
+      lessThan(a, b) || lessThan(b, a) || a == b
+  }
+  def sortFP[A](as: List[A])(lessThan: LessThanFP[A]): List[A] = ???  // transitive
+
   /*
   A type class is a tuple of three things:
 
